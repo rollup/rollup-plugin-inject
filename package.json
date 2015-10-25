@@ -1,12 +1,13 @@
 {
   "name": "rollup-plugin-inject",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "devDependencies": {
     "eslint": "^1.7.3",
     "gobble": "^0.10.2",
     "gobble-cli": "^0.6.0",
-    "gobble-rollup-babel": "^0.6.1",
-    "mocha": "^2.3.3"
+    "gobble-rollup": "^0.11.0",
+    "mocha": "^2.3.3",
+    "rollup-plugin-babel": "^1.0.0"
   },
   "main": "dist/rollup-plugin-inject.cjs.js",
   "jsnext:main": "dist/rollup-plugin-inject.es6.js",
