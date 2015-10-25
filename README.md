@@ -1,7 +1,5 @@
 # rollup-plugin-inject
 
-**experimental, depends on unreleased version of Rollup**
-
 Scan modules for global variables and inject `import` statements where necessary
 
 
