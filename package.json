@@ -1,0 +1,30 @@
+{
+  "name": "rollup-plugin-inject",
+  "version": "0.1.0",
+  "devDependencies": {
+    "eslint": "^1.7.3",
+    "gobble": "^0.10.2",
+    "gobble-cli": "^0.6.0",
+    "gobble-rollup-babel": "^0.6.1",
+    "mocha": "^2.3.3"
+  },
+  "main": "dist/rollup-plugin-inject.cjs.js",
+  "jsnext:main": "dist/rollup-plugin-inject.es6.js",
+  "scripts": {
+    "test": "mocha",
+    "pretest": "npm run build",
+    "build": "gobble build -f dist",
+    "prepublish": "npm test"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "acorn": "^2.4.0",
+    "estree-walker": "^0.2.0",
+    "magic-string": "^0.8.0",
+    "rollup-pluginutils": "^1.1.0"
+  }
+}
