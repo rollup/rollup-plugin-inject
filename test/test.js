@@ -21,6 +21,23 @@ describe( 'rollup-plugin-inject', function () {
 		});
 	});
 
+	it( 'uses the modules property', function () {
+		return rollup.rollup({
+			entry: 'samples/basic/main.js',
+			plugins: [
+				inject({
+					modules: { $: 'jquery' }
+				})
+			],
+			external: [ 'jquery' ]
+		}).then( function ( bundle ) {
+			var generated = bundle.generate();
+			var code = generated.code;
+
+			assert.ok( code.indexOf( "import $ from 'jquery'" ) !== -1, generated.code );
+		});
+	});
+
 	it( 'inserts a named import statement', function () {
 		return rollup.rollup({
 			entry: 'samples/named/main.js',

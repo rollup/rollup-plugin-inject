@@ -54,7 +54,7 @@ export default function provide ( options ) {
 
 	let modules;
 
-	if ( modules ) {
+	if ( options.modules ) {
 		modules = options.modules;
 	} else {
 		modules = Object.assign( {}, options );
