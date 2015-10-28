@@ -98,6 +98,24 @@ export default function provide ( options ) {
 
 			let newImports = {};
 
+			function handleReference ( node, name, keypath ) {
+				if ( keypath in modules && !scope.contains( name ) && !imports[ name ] ) {
+					let module = modules[ keypath ];
+					if ( typeof module === 'string' ) module = [ module, 'default' ];
+					const hash = `${keypath}:${module[0]}:${module[1]}`;
+
+					const importLocalName = name === keypath ? name : makeLegalIdentifier( `$inject_${keypath}` );
+
+					if ( !newImports[ hash ] ) {
+						newImports[ hash ] = `import { ${module[1]} as ${importLocalName} } from '${module[0]}';`;
+					}
+
+					if ( name !== keypath ) {
+						magicString.overwrite( node.start, node.end, importLocalName, true );
+					}
+				}
+			}
+
 			walk( ast, {
 				enter ( node, parent ) {
 					if ( options.sourceMap ) {
@@ -110,28 +128,14 @@ export default function provide ( options ) {
 					// special case – shorthand properties. because node.key === node.value,
 					// we can't differentiate once we've descended into the node
 					if ( node.type === 'Property' && node.shorthand ) {
-						throw new Error( 'shorthand properties not yet implemented' );
+						const name = node.key.name;
+						handleReference( node, name, name );
 						return this.skip();
 					}
 
 					if ( isReference( node, parent ) ) {
 						const { name, keypath } = flatten( node );
-
-						if ( keypath in modules && !scope.contains( name ) && !imports[ name ] ) {
-							let module = modules[ keypath ];
-							if ( typeof module === 'string' ) module = [ module, 'default' ];
-							const hash = `${keypath}:${module[0]}:${module[1]}`;
-
-							const importLocalName = name === keypath ? name : makeLegalIdentifier( `$inject_${keypath}` );
-
-							if ( !newImports[ hash ] ) {
-								newImports[ hash ] = `import { ${module[1]} as ${importLocalName} } from '${module[0]}';`
-							}
-
-							if ( name !== keypath ) {
-								magicString.overwrite( node.start, node.end, importLocalName, true );
-							}
-						}
+						handleReference( node, name, keypath );
 					}
 				},
 				leave ( node ) {

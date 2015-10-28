@@ -82,4 +82,19 @@ describe( 'rollup-plugin-inject', function () {
 			assert.ok( code.indexOf( "import $ from 'jquery'" ) === -1, generated.code );
 		});
 	});
+
+	it( 'handles shorthand properties', function () {
+		return rollup.rollup({
+			entry: 'samples/shorthand/main.js',
+			plugins: [
+				inject({ Promise: [ 'es6-promise', 'Promise' ] })
+			],
+			external: [ 'es6-promise' ]
+		}).then( function ( bundle ) {
+			var generated = bundle.generate();
+			var code = generated.code;
+
+			assert.ok( code.indexOf( "import { Promise } from 'es6-promise'" ) !== -1, generated.code );
+		});
+	});
 });
