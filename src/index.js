@@ -1,8 +1,7 @@
-import { createFilter } from 'rollup-pluginutils';
+import { attachScopes, createFilter } from 'rollup-pluginutils';
 import { extname } from 'path';
 import { walk } from 'estree-walker';
 import acorn from 'acorn';
-import attachScopes from './attachScopes';
 import makeLegalIdentifier from './makeLegalIdentifier';
 import MagicString from 'magic-string';
 
@@ -83,7 +82,7 @@ export default function provide ( options ) {
 			}
 
 			// analyse scopes
-			let scope = attachScopes( ast );
+			let scope = attachScopes( ast, 'scope' );
 
 			let imports = {};
 			ast.body.forEach( node => {
@@ -123,7 +122,7 @@ export default function provide ( options ) {
 						magicString.addSourcemapLocation( node.end );
 					}
 
-					if ( node._scope ) scope = node._scope;
+					if ( node.scope ) scope = node.scope;
 
 					// special case – shorthand properties. because node.key === node.value,
 					// we can't differentiate once we've descended into the node
@@ -139,7 +138,7 @@ export default function provide ( options ) {
 					}
 				},
 				leave ( node ) {
-					if ( node._scope ) scope = scope.parent;
+					if ( node.scope ) scope = scope.parent;
 				}
 			});
 
@@ -154,5 +153,5 @@ export default function provide ( options ) {
 				map: options.sourceMap ? magicString.generateMap() : null
 			};
 		}
-	}
+	};
 }

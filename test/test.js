@@ -96,7 +96,7 @@ describe( 'rollup-plugin-inject', function () {
 			var generated = bundle.generate();
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "import $ from 'jquery'" ) === -1, generated.code );
+			assert.ok( code.indexOf( "'jquery'" ) === -1, generated.code );
 		});
 	});
 
