@@ -25,6 +25,6 @@
     "acorn": "^2.4.0",
     "estree-walker": "^0.2.0",
     "magic-string": "^0.8.0",
-    "rollup-pluginutils": "^1.1.0"
+    "rollup-pluginutils": "^1.2.0"
   }
 }
