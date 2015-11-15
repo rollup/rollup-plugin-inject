@@ -62,6 +62,7 @@ export default function provide ( options ) {
 	}
 
 	const firstpass = new RegExp( `(?:${Object.keys( modules ).map( escape ).join( '|' )})`, 'g' );
+	const sourceMap = options.sourceMap !== false;
 
 	return {
 		transform ( code, id ) {
@@ -117,7 +118,7 @@ export default function provide ( options ) {
 
 			walk( ast, {
 				enter ( node, parent ) {
-					if ( options.sourceMap ) {
+					if ( sourceMap ) {
 						magicString.addSourcemapLocation( node.start );
 						magicString.addSourcemapLocation( node.end );
 					}
@@ -150,7 +151,7 @@ export default function provide ( options ) {
 
 			return {
 				code: magicString.toString(),
-				map: options.sourceMap ? magicString.generateMap() : null
+				map: sourceMap ? magicString.generateMap() : null
 			};
 		}
 	};
