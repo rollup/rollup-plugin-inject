@@ -1,5 +1,9 @@
 # rollup-plugin-inject
 
+## 1.2.0
+
+* Generate sourcemaps by default
+
 ## 1.1.1
 
 * Use `modules` option
