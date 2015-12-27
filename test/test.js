@@ -63,8 +63,8 @@ describe( 'rollup-plugin-inject', function () {
 			var generated = bundle.generate();
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "var clone = $inject_Object_assign" ) !== -1, generated.code );
-			assert.ok( code.indexOf( "var $inject_Object_assign =" ) !== -1, generated.code );
+			assert.notEqual( code.indexOf( "var clone = $inject_Object_assign" ), -1, code );
+			assert.notEqual( code.indexOf( "var $inject_Object_assign =" ), -1, code );
 		});
 	});
 
