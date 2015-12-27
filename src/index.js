@@ -1,7 +1,7 @@
 import { attachScopes, createFilter } from 'rollup-pluginutils';
-import { extname } from 'path';
+import { extname, sep } from 'path';
 import { walk } from 'estree-walker';
-import acorn from 'acorn';
+import { parse } from 'acorn';
 import makeLegalIdentifier from './makeLegalIdentifier';
 import MagicString from 'magic-string';
 
@@ -68,6 +68,13 @@ export default function inject ( options ) {
 		delete modules.exclude;
 	}
 
+	// Fix paths on Windows
+	if ( sep !== '/' ) {
+		Object.keys( modules ).forEach( key => {
+			modules[ key ] = modules.key.split( sep ).join( '/' );
+		});
+	}
+
 	const firstpass = new RegExp( `(?:${Object.keys( modules ).map( escape ).join( '|' )})`, 'g' );
 	const sourceMap = options.sourceMap !== false;
 
@@ -80,7 +87,7 @@ export default function inject ( options ) {
 			let ast;
 
 			try {
-				ast = acorn.parse( code, {
+				ast = parse( code, {
 					ecmaVersion: 6,
 					sourceType: 'module'
 				});
