@@ -53,6 +53,10 @@ function assign ( target, source ) {
 	return target;
 }
 
+function isArray ( thing ) {
+	return Object.prototype.toString.call( thing ) === '[object Array]';
+}
+
 export default function inject ( options ) {
 	if ( !options ) throw new Error( 'Missing options' );
 
@@ -71,7 +75,11 @@ export default function inject ( options ) {
 	// Fix paths on Windows
 	if ( sep !== '/' ) {
 		Object.keys( modules ).forEach( key => {
-			modules[ key ] = modules[ key ].split( sep ).join( '/' );
+			const module = modules[ key ];
+
+			modules[ key ] = isArray( module ) ?
+				[ module[0].split( sep ).join( '/' ), module[1] ] :
+				module.split( sep ).join( '/' );
 		});
 	}
 
