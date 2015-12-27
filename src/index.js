@@ -71,7 +71,7 @@ export default function inject ( options ) {
 	// Fix paths on Windows
 	if ( sep !== '/' ) {
 		Object.keys( modules ).forEach( key => {
-			modules[ key ] = modules.key.split( sep ).join( '/' );
+			modules[ key ] = modules[ key ].split( sep ).join( '/' );
 		});
 	}
 
