@@ -46,7 +46,14 @@ function flatten ( node ) {
 	return { name, keypath: parts.join( '.' ) };
 }
 
-export default function provide ( options ) {
+function assign ( target, source ) {
+	Object.keys( source ).forEach( key => {
+		target[ key ] = source[ key ];
+	});
+	return target;
+}
+
+export default function inject ( options ) {
 	if ( !options ) throw new Error( 'Missing options' );
 
 	const filter = createFilter( options.include, options.exclude );
@@ -56,7 +63,7 @@ export default function provide ( options ) {
 	if ( options.modules ) {
 		modules = options.modules;
 	} else {
-		modules = Object.assign( {}, options );
+		modules = assign( {}, options );
 		delete modules.include;
 		delete modules.exclude;
 	}
