@@ -1,11 +1,12 @@
 {
   "name": "rollup-plugin-inject",
+  "description": "Scan modules for global variables and inject `import` statements where necessary",
   "version": "1.2.0",
   "devDependencies": {
     "eslint": "^1.7.3",
     "mocha": "^2.3.3",
-    "rollup": "^0.20.3",
-    "rollup-plugin-babel": "^1.0.0"
+    "rollup": "^0.22.0",
+    "rollup-plugin-babel": "^2.2.0"
   },
   "main": "dist/rollup-plugin-inject.cjs.js",
   "jsnext:main": "dist/rollup-plugin-inject.es6.js",
@@ -24,7 +25,24 @@
   "dependencies": {
     "acorn": "^2.4.0",
     "estree-walker": "^0.2.0",
-    "magic-string": "^0.8.0",
+    "magic-string": "^0.10.0",
     "rollup-pluginutils": "^1.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rollup/rollup-plugin-inject.git"
+  },
+  "keywords": [
+    "rollup",
+    "rollup-plugin",
+    "es2015",
+    "npm",
+    "modules"
+  ],
+  "author": "Rich Harris <richard.a.harris@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rollup/rollup-plugin-inject/issues"
+  },
+  "homepage": "https://github.com/rollup/rollup-plugin-inject#readme"
 }
