@@ -89,7 +89,7 @@ export default function inject ( options ) {
 	return {
 		transform ( code, id ) {
 			if ( !filter( id ) ) return null;
-			if ( !firstpass.test( code ) ) return null;
+			if ( code.search( firstpass ) == -1 ) return null;
 			if ( extname( id ) !== '.js' ) return null;
 
 			let ast;
