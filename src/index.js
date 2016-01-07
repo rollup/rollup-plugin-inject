@@ -124,6 +124,10 @@ export default function inject ( options ) {
 				if ( keypath in modules && !scope.contains( name ) && !imports[ name ] ) {
 					let module = modules[ keypath ];
 					if ( typeof module === 'string' ) module = [ module, 'default' ];
+
+					// prevent module from importing itself
+					if ( module[0] === id ) return;
+
 					const hash = `${keypath}:${module[0]}:${module[1]}`;
 
 					const importLocalName = name === keypath ? name : makeLegalIdentifier( `$inject_${keypath}` );
