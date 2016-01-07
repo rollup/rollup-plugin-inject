@@ -1,5 +1,10 @@
 # rollup-plugin-inject
 
+## 1.4.0
+
+* Use `string.search` instead of `regex.test` to avoid state-related mishaps ([#5](https://github.com/rollup/rollup-plugin-inject/issues/5))
+* Prevent self-importing module bug
+
 ## 1.3.0
 
 * Windows support ([#2](https://github.com/rollup/rollup-plugin-inject/issues/2))
