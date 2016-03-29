@@ -1,5 +1,5 @@
 import { attachScopes, createFilter } from 'rollup-pluginutils';
-import { extname, sep } from 'path';
+import { sep } from 'path';
 import { walk } from 'estree-walker';
 import { parse } from 'acorn';
 import makeLegalIdentifier from './makeLegalIdentifier';
@@ -90,7 +90,7 @@ export default function inject ( options ) {
 		transform ( code, id ) {
 			if ( !filter( id ) ) return null;
 			if ( code.search( firstpass ) == -1 ) return null;
-			
+
 			let ast;
 
 			try {
