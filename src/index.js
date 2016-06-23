@@ -87,6 +87,8 @@ export default function inject ( options ) {
 	const sourceMap = options.sourceMap !== false;
 
 	return {
+		name: 'inject',
+
 		transform ( code, id ) {
 			if ( !filter( id ) ) return null;
 			if ( code.search( firstpass ) == -1 ) return null;

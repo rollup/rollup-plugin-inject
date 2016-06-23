@@ -1,5 +1,9 @@
 # rollup-plugin-inject
 
+## 1.4.1
+
+* Return a `name`
+
 ## 1.4.0
 
 * Use `string.search` instead of `regex.test` to avoid state-related mishaps ([#5](https://github.com/rollup/rollup-plugin-inject/issues/5))
