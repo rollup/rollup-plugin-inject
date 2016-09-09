@@ -71,6 +71,7 @@ export default function inject ( options ) {
 		delete modules.include;
 		delete modules.exclude;
 	}
+
 	// Fix paths on Windows
 	if ( sep !== '/' ) {
 		Object.keys( modules ).forEach( key => {
@@ -102,6 +103,7 @@ export default function inject ( options ) {
 			if ( !filter( id ) ) return null;
 			if ( code.search( firstpass ) == -1 ) return null;
 			if ( extname( id ) !== '.js' ) return null;
+
 			let handled = new WeakSet();
 			let ast;
 
@@ -154,8 +156,8 @@ export default function inject ( options ) {
 						magicString.overwrite( node.start, node.end, importLocalName, true );
 					}
 					if (dotModules.has(keypath)) {
-		        handled.add(node);
-		      }
+						handled.add(node);
+					}
 				}
 			}
 
