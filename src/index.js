@@ -71,7 +71,6 @@ export default function inject ( options ) {
 		delete modules.include;
 		delete modules.exclude;
 	}
-
 	// Fix paths on Windows
 	if ( sep !== '/' ) {
 		Object.keys( modules ).forEach( key => {
@@ -86,6 +85,16 @@ export default function inject ( options ) {
 	const firstpass = new RegExp( `(?:${Object.keys( modules ).map( escape ).join( '|' )})`, 'g' );
 	const sourceMap = options.sourceMap !== false;
 
+	let dotModules = new Set();
+	let simpleModules = new Set();
+	Object.keys(modules).forEach( key => {
+		if (key.indexOf('.') > -1) {
+			dotModules.add(key);
+		} else {
+			simpleModules.add(key);
+		}
+	})
+
 	return {
 		name: 'inject',
 
@@ -93,7 +102,7 @@ export default function inject ( options ) {
 			if ( !filter( id ) ) return null;
 			if ( code.search( firstpass ) == -1 ) return null;
 			if ( extname( id ) !== '.js' ) return null;
-
+			let handled = new WeakSet();
 			let ast;
 
 			try {
@@ -122,8 +131,11 @@ export default function inject ( options ) {
 
 			let newImports = {};
 
-			function handleReference ( node, name, keypath ) {
+			function handleReference ( node, name, keypath, parent ) {
 				if ( keypath in modules && !scope.contains( name ) && !imports[ name ] ) {
+					if (simpleModules.has(keypath) && handled.has(parent)) {
+						return;
+					}
 					let module = modules[ keypath ];
 					if ( typeof module === 'string' ) module = [ module, 'default' ];
 
@@ -141,6 +153,9 @@ export default function inject ( options ) {
 					if ( name !== keypath ) {
 						magicString.overwrite( node.start, node.end, importLocalName, true );
 					}
+					if (dotModules.has(keypath)) {
+		        handled.add(node);
+		      }
 				}
 			}
 
@@ -157,13 +172,13 @@ export default function inject ( options ) {
 					// we can't differentiate once we've descended into the node
 					if ( node.type === 'Property' && node.shorthand ) {
 						const name = node.key.name;
-						handleReference( node, name, name );
+						handleReference( node, name, name, parent );
 						return this.skip();
 					}
 
 					if ( isReference( node, parent ) ) {
 						const { name, keypath } = flatten( node );
-						handleReference( node, name, keypath );
+						handleReference( node, name, keypath, parent );
 					}
 				},
 				leave ( node ) {
