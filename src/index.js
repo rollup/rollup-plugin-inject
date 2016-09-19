@@ -57,6 +57,9 @@ function isArray ( thing ) {
 	return Object.prototype.toString.call( thing ) === '[object Array]';
 }
 
+const isWindows = sep !== '/';
+const pattern = /[\\\/]/g;
+
 export default function inject ( options ) {
 	if ( !options ) throw new Error( 'Missing options' );
 
@@ -73,15 +76,15 @@ export default function inject ( options ) {
 	}
 
 	// Fix paths on Windows
-	// if ( sep !== '/' ) {
-	// 	Object.keys( modules ).forEach( key => {
-	// 		const module = modules[ key ];
-	//
-	// 		modules[ key ] = isArray( module ) ?
-	// 			[ module[0].split( sep ).join( '/' ), module[1] ] :
-	// 			module.split( sep ).join( '/' );
-	// 	});
-	// }
+	if ( sep !== '/' ) {
+		Object.keys( modules ).forEach( key => {
+			const module = modules[ key ];
+
+			modules[ key ] = isArray( module ) ?
+				[ module[0].split( sep ).join( '/' ), module[1] ] :
+				module.split( sep ).join( '/' );
+		});
+	}
 
 	const firstpass = new RegExp( `(?:${Object.keys( modules ).map( escape ).join( '|' )})`, 'g' );
 	const sourceMap = options.sourceMap !== false;
@@ -93,6 +96,8 @@ export default function inject ( options ) {
 			if ( !filter( id ) ) return null;
 			if ( code.search( firstpass ) == -1 ) return null;
 			if ( extname( id ) !== '.js' ) return null;
+
+			if ( sep !== '/' ) id = id.split( sep ).join( '/' );
 
 			let ast;
 
