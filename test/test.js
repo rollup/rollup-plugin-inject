@@ -144,4 +144,27 @@ describe( 'rollup-plugin-inject', function () {
 			assert.ok( code.indexOf( "import * as foo from 'foo'" ) !== -1, generated.code );
 		});
 	});
+
+	it( 'transpiles non-JS files but handles failures to parse', function () {
+		return rollup.rollup({
+			entry: 'samples/non-js/main.js',
+			plugins: [
+				inject({ relative: [ 'path', 'relative' ] }),
+				{
+					transform ( code, id ) {
+						if ( /css/.test( id ) ) {
+							return '';
+						}
+					}
+				}
+			],
+			external: [ 'path' ]
+		}).then( function ( bundle ) {
+			var generated = bundle.generate({ format: 'cjs' });
+			var code = generated.code;
+
+			var fn = new Function( 'require', 'assert', code );
+			fn( require, assert );
+		});
+	});
 });
