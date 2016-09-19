@@ -57,6 +57,17 @@ function isArray ( thing ) {
 	return Object.prototype.toString.call( thing ) === '[object Array]';
 }
 
+function tryParse ( code, id ) {
+	try {
+		return parse( code, {
+			ecmaVersion: 6,
+			sourceType: 'module'
+		});
+	} catch ( err ) {
+		console.warn( `rollup-plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include` );
+	}
+}
+
 export default function inject ( options ) {
 	if ( !options ) throw new Error( 'Missing options' );
 
@@ -95,17 +106,8 @@ export default function inject ( options ) {
 
 			if ( sep !== '/' ) id = id.split( sep ).join( '/' );
 
-			let ast;
-
-			try {
-				ast = parse( code, {
-					ecmaVersion: 6,
-					sourceType: 'module'
-				});
-			} catch ( err ) {
-				err.message += ` in ${id}`;
-				throw err;
-			}
+			const ast = tryParse( code, id );
+			if ( !ast ) return null;
 
 			// analyse scopes
 			let scope = attachScopes( ast, 'scope' );
