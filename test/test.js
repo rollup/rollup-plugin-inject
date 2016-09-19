@@ -129,4 +129,19 @@ describe( 'rollup-plugin-inject', function () {
 			assert.deepEqual( bundle.imports, [ 'is-buffer' ]);
 		});
 	});
+
+	it( 'generates * imports', function () {
+		return rollup.rollup({
+			entry: 'samples/import-namespace/main.js',
+			plugins: [
+				inject({ foo: [ 'foo', '*' ] })
+			],
+			external: [ 'foo' ]
+		}).then( function ( bundle ) {
+			var generated = bundle.generate();
+			var code = generated.code;
+
+			assert.ok( code.indexOf( "import * as foo from 'foo'" ) !== -1, generated.code );
+		});
+	});
 });
