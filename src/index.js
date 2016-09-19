@@ -94,6 +94,8 @@ export default function inject ( options ) {
 			if ( code.search( firstpass ) == -1 ) return null;
 			if ( extname( id ) !== '.js' ) return null;
 
+			if ( sep !== '/' ) id = id.split( sep ).join( '/' );
+
 			let ast;
 
 			try {
