@@ -114,4 +114,22 @@ describe( 'rollup-plugin-inject', function () {
 			assert.ok( code.indexOf( "import { Promise } from 'es6-promise'" ) !== -1, generated.code );
 		});
 	});
+
+	it( 'handles redundent keys', function () {
+		return rollup.rollup({
+			entry: 'samples/redundent-keys/main.js',
+			plugins: [
+				inject({
+					Buffer: 'Buffer',
+					'Buffer.isBuffer': 'is-buffer'
+				})
+			],
+			external: [ 'Buffer', 'is-buffer' ]
+		}).then( function ( bundle ) {
+			var generated = bundle.generate();
+			var code = generated.code;
+			console.log(code);
+			assert.ok( true, generated.code );
+		});
+	});
 });
