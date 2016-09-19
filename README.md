@@ -24,7 +24,7 @@ rollup({
       // with include/exclude
       exclude: 'node_modules/**',
 
-      // all other options are treated as modules...
+      /* all other options are treated as modules...*/
 
       // use the default – i.e. insert
       // import $ from 'jquery'
@@ -34,11 +34,16 @@ rollup({
       // import { Promise } from 'es6-promise'
       Promise: [ 'es6-promise', 'Promise' ],
 
+      // use a namespace import – i.e. insert
+      // import * as fs from 'fs'
+      fs: [ 'fs', '*' ],
+
       // use a local module instead of a third-party one
       'Object.assign': path.resolve( 'src/helpers/object-assign.js' ),
 
-      // ...but if you want to be careful about separating modules
-      // from other options, supply `options.modules` instead
+      /* ...but if you want to be careful about separating modules
+         from other options, supply `options.modules` instead */
+
       modules: {
         $: 'jquery',
         Promise: [ 'es6-promise', 'Promise' ],
