@@ -137,7 +137,11 @@ export default function inject ( options ) {
 					const importLocalName = name === keypath ? name : makeLegalIdentifier( `$inject_${keypath}` );
 
 					if ( !newImports[ hash ] ) {
-						newImports[ hash ] = `import { ${module[1]} as ${importLocalName} } from '${module[0]}';`;
+						if ( modules[1] === '*' ) {
+							newImports[ hash ] = `import * as ${importLocalName} from '${module[0]}';`;
+						} else {
+							newImports[ hash ] = `import { ${module[1]} as ${importLocalName} } from '${module[0]}';`;
+						}
 					}
 
 					if ( name !== keypath ) {
