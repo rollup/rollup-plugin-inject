@@ -57,6 +57,9 @@ function isArray ( thing ) {
 	return Object.prototype.toString.call( thing ) === '[object Array]';
 }
 
+const isWindows = sep !== '/';
+const pattern = /[\\\/]/g;
+
 export default function inject ( options ) {
 	if ( !options ) throw new Error( 'Missing options' );
 
@@ -94,6 +97,8 @@ export default function inject ( options ) {
 			if ( code.search( firstpass ) == -1 ) return null;
 			if ( extname( id ) !== '.js' ) return null;
 
+			if ( sep !== '/' ) id = id.split( sep ).join( '/' );
+
 			let ast;
 
 			try {
@@ -128,6 +133,7 @@ export default function inject ( options ) {
 					if ( typeof module === 'string' ) module = [ module, 'default' ];
 
 					// prevent module from importing itself
+					console.log( `id, module[0]`, id, module[0] )
 					if ( module[0] === id ) return;
 
 					const hash = `${keypath}:${module[0]}:${module[1]}`;
@@ -141,6 +147,8 @@ export default function inject ( options ) {
 					if ( name !== keypath ) {
 						magicString.overwrite( node.start, node.end, importLocalName, true );
 					}
+
+					return true;
 				}
 			}
 
@@ -163,7 +171,8 @@ export default function inject ( options ) {
 
 					if ( isReference( node, parent ) ) {
 						const { name, keypath } = flatten( node );
-						handleReference( node, name, keypath );
+						const handled = handleReference( node, name, keypath );
+						if ( handled ) return this.skip();
 					}
 				},
 				leave ( node ) {
