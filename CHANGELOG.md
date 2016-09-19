@@ -1,5 +1,11 @@
 # rollup-plugin-inject
 
+## 2.0.0
+
+* Work with all file extensions, not just `.js` (unless otherwise specified via `options.include` and `options.exclude`) ([#6](https://github.com/rollup/rollup-plugin-inject/pull/6))
+* Allow `*` imports ([#9](https://github.com/rollup/rollup-plugin-inject/pull/9))
+* Ignore replacements that are superseded (e.g. if `Buffer.isBuffer` is replaced, ignore `Buffer` replacement) ([#10](https://github.com/rollup/rollup-plugin-inject/pull/10))
+
 ## 1.4.1
 
 * Return a `name`

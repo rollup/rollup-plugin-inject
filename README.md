@@ -22,6 +22,7 @@ rollup({
     inject({
       // control which files this plugin applies to
       // with include/exclude
+      include: '**/*.js',
       exclude: 'node_modules/**',
 
       /* all other options are treated as modules...*/
