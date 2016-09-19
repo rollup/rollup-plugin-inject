@@ -94,6 +94,8 @@ export default function inject ( options ) {
 			if ( code.search( firstpass ) == -1 ) return null;
 			if ( extname( id ) !== '.js' ) return null;
 
+			if ( sep !== '/' ) id = id.split( sep ).join( '/' );
+
 			let ast;
 
 			try {
@@ -141,6 +143,8 @@ export default function inject ( options ) {
 					if ( name !== keypath ) {
 						magicString.overwrite( node.start, node.end, importLocalName, true );
 					}
+
+					return true;
 				}
 			}
 
@@ -163,7 +167,8 @@ export default function inject ( options ) {
 
 					if ( isReference( node, parent ) ) {
 						const { name, keypath } = flatten( node );
-						handleReference( node, name, keypath );
+						const handled = handleReference( node, name, keypath );
+						if ( handled ) return this.skip();
 					}
 				},
 				leave ( node ) {
