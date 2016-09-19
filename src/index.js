@@ -128,6 +128,7 @@ export default function inject ( options ) {
 					if ( typeof module === 'string' ) module = [ module, 'default' ];
 
 					// prevent module from importing itself
+					console.log( `id, module[0]`, id, module[0] )
 					if ( module[0] === id ) return;
 
 					const hash = `${keypath}:${module[0]}:${module[1]}`;
