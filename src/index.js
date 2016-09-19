@@ -73,15 +73,15 @@ export default function inject ( options ) {
 	}
 
 	// Fix paths on Windows
-	if ( sep !== '/' ) {
-		Object.keys( modules ).forEach( key => {
-			const module = modules[ key ];
-
-			modules[ key ] = isArray( module ) ?
-				[ module[0].split( sep ).join( '/' ), module[1] ] :
-				module.split( sep ).join( '/' );
-		});
-	}
+	// if ( sep !== '/' ) {
+	// 	Object.keys( modules ).forEach( key => {
+	// 		const module = modules[ key ];
+	//
+	// 		modules[ key ] = isArray( module ) ?
+	// 			[ module[0].split( sep ).join( '/' ), module[1] ] :
+	// 			module.split( sep ).join( '/' );
+	// 	});
+	// }
 
 	const firstpass = new RegExp( `(?:${Object.keys( modules ).map( escape ).join( '|' )})`, 'g' );
 	const sourceMap = options.sourceMap !== false;
