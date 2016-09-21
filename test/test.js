@@ -167,4 +167,18 @@ describe( 'rollup-plugin-inject', function () {
 			fn( require, assert );
 		});
 	});
+	it( 'works with windows paths', function () {
+		var external = [ 'C:\\Users\\IEUser\\projects\\node_modules\\process-es6\\browser.js' ];
+		return rollup.rollup({
+			entry: 'samples/redundant-keys/main.js',
+			plugins: [
+				inject({
+					Buffer: 'C:\\Users\\IEUser\\projects\\node_modules\\process-es6\\browser.js'
+				})
+			],
+			external: external
+		}).then( function ( bundle ) {
+			assert.deepEqual(bundle.imports, external);
+		});
+	});
 });

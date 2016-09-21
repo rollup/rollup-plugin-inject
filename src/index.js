@@ -139,9 +139,9 @@ export default function inject ( options ) {
 
 					if ( !newImports[ hash ] ) {
 						if ( module[1] === '*' ) {
-							newImports[ hash ] = `import * as ${importLocalName} from '${module[0]}';`;
+							newImports[ hash ] = `import * as ${importLocalName} from ${JSON.stringify(module[0])};`;
 						} else {
-							newImports[ hash ] = `import { ${module[1]} as ${importLocalName} } from '${module[0]}';`;
+							newImports[ hash ] = `import { ${module[1]} as ${importLocalName} } from ${JSON.stringify(module[0])};`;
 						}
 					}
 
