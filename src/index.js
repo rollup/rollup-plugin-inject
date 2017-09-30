@@ -1,8 +1,7 @@
-import { attachScopes, createFilter } from 'rollup-pluginutils';
+import { attachScopes, createFilter, makeLegalIdentifier } from 'rollup-pluginutils';
 import { sep } from 'path';
 import { walk } from 'estree-walker';
 import { parse } from 'acorn';
-import makeLegalIdentifier from './makeLegalIdentifier';
 import MagicString from 'magic-string';
 
 function escape ( str ) {
@@ -146,7 +145,7 @@ export default function inject ( options ) {
 					}
 
 					if ( name !== keypath ) {
-						magicString.overwrite( node.start, node.end, importLocalName, true );
+						magicString.overwrite( node.start, node.end, importLocalName, { storeName: true } );
 					}
 
 					return true;
