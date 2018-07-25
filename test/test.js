@@ -18,7 +18,7 @@ describe( 'rollup-plugin-inject', function () {
 		}).then( function ( generated ) {
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "import $ from 'jquery'" ) !== -1, generated.code );
+			assert.ok( code.indexOf( 'import $ from \'jquery\'' ) !== -1, generated.code );
 		});
 	});
 
@@ -36,7 +36,7 @@ describe( 'rollup-plugin-inject', function () {
 		}).then( function ( generated ) {
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "import $ from 'jquery'" ) !== -1, generated.code );
+			assert.ok( code.indexOf( 'import $ from \'jquery\'' ) !== -1, generated.code );
 		});
 	});
 
@@ -52,7 +52,7 @@ describe( 'rollup-plugin-inject', function () {
 		}).then( function ( generated ) {
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "import { Promise } from 'es6-promise'" ) !== -1, generated.code );
+			assert.ok( code.indexOf( 'import { Promise } from \'es6-promise\'' ) !== -1, generated.code );
 		});
 	});
 
@@ -67,8 +67,8 @@ describe( 'rollup-plugin-inject', function () {
 		}).then( function ( generated ) {
 			var code = generated.code;
 
-			assert.notEqual( code.indexOf( "var clone = $inject_Object_assign" ), -1, code );
-			assert.notEqual( code.indexOf( "var $inject_Object_assign =" ), -1, code );
+			assert.notEqual( code.indexOf( 'var clone = $inject_Object_assign' ), -1, code );
+			assert.notEqual( code.indexOf( 'var $inject_Object_assign =' ), -1, code );
 		});
 	});
 
@@ -86,7 +86,7 @@ describe( 'rollup-plugin-inject', function () {
 
 			code = code.replace( /import \$.+/, '' ); // remove first instance. there shouldn't be a second
 
-			assert.ok( code.indexOf( "import $ from 'jquery'" ) === -1, generated.code );
+			assert.ok( code.indexOf( 'import $ from \'jquery\'' ) === -1, generated.code );
 		});
 	});
 
@@ -102,7 +102,7 @@ describe( 'rollup-plugin-inject', function () {
 		}).then( function ( generated ) {
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "'jquery'" ) === -1, generated.code );
+			assert.ok( code.indexOf( '\'jquery\'' ) === -1, generated.code );
 		});
 	});
 
@@ -118,7 +118,7 @@ describe( 'rollup-plugin-inject', function () {
 		}).then( function ( generated ) {
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "import { Promise } from 'es6-promise'" ) !== -1, generated.code );
+			assert.ok( code.indexOf( 'import { Promise } from \'es6-promise\'' ) !== -1, generated.code );
 		});
 	});
 
@@ -149,7 +149,7 @@ describe( 'rollup-plugin-inject', function () {
 		}).then( function ( generated ) {
 			var code = generated.code;
 
-			assert.ok( code.indexOf( "import { bar, baz } from 'foo'" ) !== -1, generated.code );
+			assert.ok( code.indexOf( 'import { bar, baz } from \'foo\'' ) !== -1, generated.code );
 		});
 	});
 
