@@ -1,5 +1,9 @@
 # rollup-plugin-inject
 
+## 2.1.0
+
+* Update all dependencies ([#15](https://github.com/rollup/rollup-plugin-inject/pull/15))
+
 ## 2.0.0
 
 * Work with all file extensions, not just `.js` (unless otherwise specified via `options.include` and `options.exclude`) ([#6](https://github.com/rollup/rollup-plugin-inject/pull/6))

@@ -1,12 +1,13 @@
-import { attachScopes, createFilter } from 'rollup-pluginutils';
+import { attachScopes, createFilter, makeLegalIdentifier } from 'rollup-pluginutils';
 import { sep } from 'path';
 import { walk } from 'estree-walker';
+
+// TODO this should be using the "this.parse" function on rollup's plugin context instead
 import { parse } from 'acorn';
-import makeLegalIdentifier from './makeLegalIdentifier';
 import MagicString from 'magic-string';
 
 function escape ( str ) {
-	return str.replace( /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&' );
+	return str.replace( /[-[\]/{}()*+?.\\^$|]/g, '\\$&' );
 }
 
 function isReference ( node, parent ) {
@@ -64,6 +65,8 @@ function tryParse ( code, id ) {
 			sourceType: 'module'
 		});
 	} catch ( err ) {
+	  // TODO this should use rollup's official mechanism for plugin warnings (i.e. "this.warn" on the plugin context)
+		// eslint-disable-next-line no-console
 		console.warn( `rollup-plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include` );
 	}
 }
@@ -146,7 +149,7 @@ export default function inject ( options ) {
 					}
 
 					if ( name !== keypath ) {
-						magicString.overwrite( node.start, node.end, importLocalName, true );
+						magicString.overwrite( node.start, node.end, importLocalName, { storeName: true } );
 					}
 
 					return true;
