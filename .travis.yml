@@ -8,4 +8,6 @@ node_js:
 env:
   global:
     - BUILD_TIMEOUT=10000
-install: npm ci
+install: npm ci --ignore-scripts
+before_install:
+  - if [[ $TRAVIS_NODE_VERSION -lt 6 ]]; then npm install --global npm@5; else npm install --global npm@latest; fi
