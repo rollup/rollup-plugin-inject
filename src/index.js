@@ -6,8 +6,6 @@ import {
 import { sep } from 'path';
 import { walk } from 'estree-walker';
 
-// TODO this should be using the "this.parse" function on rollup's plugin context instead
-import { parse } from 'acorn';
 import MagicString from 'magic-string';
 
 function escape (str) {
@@ -52,32 +50,6 @@ function flatten (node) {
 	return { name, keypath: parts.join('.') };
 }
 
-function assign (target, source) {
-	Object.keys(source).forEach(key => {
-		target[key] = source[key];
-	});
-	return target;
-}
-
-function isArray (thing) {
-	return Object.prototype.toString.call(thing) === '[object Array]';
-}
-
-function tryParse (code, id) {
-	try {
-		return parse(code, {
-			ecmaVersion: 6,
-			sourceType: 'module'
-		});
-	} catch (err) {
-		// TODO this should use rollup's official mechanism for plugin warnings (i.e. "this.warn" on the plugin context)
-		// eslint-disable-next-line no-console
-		console.warn(
-			`rollup-plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include`
-		);
-	}
-}
-
 export default function inject (options) {
 	if (!options) throw new Error('Missing options');
 
@@ -88,7 +60,7 @@ export default function inject (options) {
 	if (options.modules) {
 		modules = options.modules;
 	} else {
-		modules = assign({}, options);
+		modules = Object.assign({}, options);
 		delete modules.include;
 		delete modules.exclude;
 	}
@@ -98,7 +70,7 @@ export default function inject (options) {
 		Object.keys(modules).forEach(key => {
 			const module = modules[key];
 
-			modules[key] = isArray(module)
+			modules[key] = Array.isArray(module)
 				? [module[0].split(sep).join('/'), module[1]]
 				: module.split(sep).join('/');
 		});
@@ -121,7 +93,16 @@ export default function inject (options) {
 
 			if (sep !== '/') id = id.split(sep).join('/');
 
-			const ast = tryParse(code, id);
+			let ast = null;
+			try {
+				ast = this.parse(code);
+			} catch (err) {
+				this.warn({
+					code: 'PARSE_ERROR',
+					message:
+						`rollup-plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include`
+				});
+			}
 			if (!ast) return null;
 
 			// analyse scopes
