@@ -4,11 +4,7 @@ import { walk } from "estree-walker";
 
 import MagicString from "magic-string";
 
-function escape(str) {
-  return str.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
-}
-
-function isReference(node, parent) {
+const isReference = (node, parent) => {
   if (node.type === "MemberExpression") {
     return !node.computed && isReference(node.object, node);
   }
@@ -28,9 +24,9 @@ function isReference(node, parent) {
 
     return true;
   }
-}
+};
 
-function flatten(node) {
+const flatten = (node) => {
   const parts = [];
 
   while (node.type === "MemberExpression") {
@@ -42,40 +38,32 @@ function flatten(node) {
   parts.unshift(name);
 
   return { name, keypath: parts.join(".") };
-}
+};
 
 export default function inject(options) {
   if (!options) throw new Error("Missing options");
 
   const filter = createFilter(options.include, options.exclude);
 
-  let modules;
+  let modules = options.modules;
 
-  if (options.modules) {
-    modules = options.modules;
-  } else {
+  if (!modules) {
     modules = Object.assign({}, options);
     delete modules.include;
     delete modules.exclude;
   }
 
+  const modulesMap = new Map(Object.entries(modules));
+
   // Fix paths on Windows
   if (sep !== "/") {
-    Object.keys(modules).forEach(key => {
-      const module = modules[key];
-
-      modules[key] = Array.isArray(module)
-        ? [module[0].split(sep).join("/"), module[1]]
-        : module.split(sep).join("/");
+    modulesMap.forEach((mod, key) => {
+      modulesMap.set(key, Array.isArray(mod)
+        ? [mod[0].split(sep).join("/"), mod[1]]
+        : mod.split(sep).join("/"));
     });
   }
 
-  const firstpass = new RegExp(
-    `(?:${Object.keys(modules)
-      .map(escape)
-      .join("|")})`,
-    "g"
-  );
   const sourceMap = options.sourceMap !== false;
 
   return {
@@ -83,8 +71,6 @@ export default function inject(options) {
 
     transform(code, id) {
       if (!filter(id)) return null;
-      if (code.search(firstpass) == -1) return null;
-
       if (sep !== "/") id = id.split(sep).join("/");
 
       let ast = null;
@@ -96,44 +82,46 @@ export default function inject(options) {
           message: `rollup-plugin-inject: failed to parse ${id}. Consider restricting the plugin to particular files via options.include`
         });
       }
-      if (!ast) return null;
+      if (!ast) {
+        return null;
+      }
 
       // analyse scopes
       let scope = attachScopes(ast, "scope");
 
-      const imports = {};
+      const imports = new Set();
       ast.body.forEach(node => {
         if (node.type === "ImportDeclaration") {
           node.specifiers.forEach(specifier => {
-            imports[specifier.local.name] = true;
+            imports.add(specifier.local.name);
           });
         }
       });
 
       const magicString = new MagicString(code);
 
-      const newImports = {};
+      const newImports = new Map();
 
       function handleReference(node, name, keypath) {
-        if (keypath in modules && !scope.contains(name) && !imports[name]) {
-          let module = modules[keypath];
-          if (typeof module === "string") module = [module, "default"];
+        let mod = modulesMap.get(keypath);
+        if (mod && !scope.contains(name) && !imports.has(name)) {
+          if (typeof mod === "string") mod = [mod, "default"];
 
           // prevent module from importing itself
-          if (module[0] === id) return;
+          if (mod[0] === id) return;
 
-          const hash = `${keypath}:${module[0]}:${module[1]}`;
+          const hash = `${keypath}:${mod[0]}:${mod[1]}`;
 
           const importLocalName =
             name === keypath ? name : makeLegalIdentifier(`$inject_${keypath}`);
 
-          if (!newImports[hash]) {
-            if (module[1] === "*") {
-              newImports[hash] = `import * as ${importLocalName} from '${module[0]}';`;
+          if (!newImports.has(hash)) {
+            if (mod[1] === "*") {
+              newImports.set(hash, `import * as ${importLocalName} from '${mod[0]}';`);
             } else {
-              newImports[hash] = `import { ${module[1]} as ${importLocalName} } from '${
-                module[0]
-              }';`;
+              newImports.set(hash, `import { ${mod[1]} as ${importLocalName} } from '${
+                mod[0]
+              }';`);
             }
           }
 
@@ -175,10 +163,15 @@ export default function inject(options) {
         }
       });
 
-      const keys = Object.keys(newImports);
-      if (!keys.length) return null;
+      if (newImports.size === 0) {
+        return {
+          code,
+          ast
+        };
+      }
+      const importBlock = Array.from(newImports.values())
+        .join("\n\n");
 
-      const importBlock = keys.map(hash => newImports[hash]).join("\n\n");
       magicString.prepend(importBlock + "\n\n");
 
       return {
