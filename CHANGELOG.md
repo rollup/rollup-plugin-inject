@@ -1,5 +1,10 @@
 # rollup-plugin-inject
 
+## 3.0.0
+
+* Remove node v6 from support
+* Use modern js
+
 ## 2.1.0
 
 * Update all dependencies ([#15](https://github.com/rollup/rollup-plugin-inject/pull/15))
