@@ -4,6 +4,10 @@ import { walk } from "estree-walker";
 
 import MagicString from "magic-string";
 
+const escape = (str) => {
+  return str.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
+};
+
 const isReference = (node, parent) => {
   if (node.type === "MemberExpression") {
     return !node.computed && isReference(node.object, node);
@@ -64,6 +68,12 @@ export default function inject(options) {
     });
   }
 
+  const firstpass = new RegExp(
+    `(?:${Object.keys(modules)
+      .map(escape)
+      .join("|")})`,
+    "g"
+  );
   const sourceMap = options.sourceMap !== false;
 
   return {
@@ -71,6 +81,8 @@ export default function inject(options) {
 
     transform(code, id) {
       if (!filter(id)) return null;
+      if (!firstpass.test(code)) return null;
+
       if (sep !== "/") id = id.split(sep).join("/");
 
       let ast = null;
@@ -104,7 +116,7 @@ export default function inject(options) {
 
       function handleReference(node, name, keypath) {
         let mod = modulesMap.get(keypath);
-        if (mod && !scope.contains(name) && !imports.has(name)) {
+        if (mod && !imports.has(name) && !scope.contains(name)) {
           if (typeof mod === "string") mod = [mod, "default"];
 
           // prevent module from importing itself
