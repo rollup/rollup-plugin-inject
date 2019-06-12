@@ -157,7 +157,7 @@ describe("rollup-plugin-inject", () => {
 
     const { code } = output[0];
 
-    const fn = new Function("require", "assert", code);
-    fn(require, assert);
+    const fn = new Function("require", "path", "assert", code);
+    fn(require, path, assert);
   });
 });
