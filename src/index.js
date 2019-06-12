@@ -69,7 +69,7 @@ export default function inject(options) {
   }
 
   const firstpass = new RegExp(
-    `(?:${Object.keys(modules)
+    `(?:${Array.from(modulesMap.keys())
       .map(escape)
       .join("|")})`,
     "g"
@@ -81,7 +81,7 @@ export default function inject(options) {
 
     transform(code, id) {
       if (!filter(id)) return null;
-      if (!firstpass.test(code)) return null;
+      if (code.search(firstpass) === -1) return null;
 
       if (sep !== "/") id = id.split(sep).join("/");
 
