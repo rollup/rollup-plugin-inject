@@ -178,7 +178,7 @@ export default function inject(options) {
         return {
           code,
           ast,
-          map: sourceMap ? magicString.generateMap() : null
+          map: sourceMap ? magicString.generateMap({ hires: true }) : null
         };
       }
       const importBlock = Array.from(newImports.values()).join("\n\n");
@@ -187,7 +187,7 @@ export default function inject(options) {
 
       return {
         code: magicString.toString(),
-        map: sourceMap ? magicString.generateMap() : null
+        map: sourceMap ? magicString.generateMap({ hires: true }) : null
       };
     }
   };
