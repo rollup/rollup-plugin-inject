@@ -74,7 +74,7 @@ export default function inject(options) {
       .join("|")})`,
     "g"
   );
-  const sourceMap = options.sourceMap !== false;
+  const sourceMap = options.sourceMap !== false && options.sourcemap !== false;
 
   return {
     name: "inject",
@@ -178,7 +178,8 @@ export default function inject(options) {
       if (newImports.size === 0) {
         return {
           code,
-          ast
+          ast,
+          map: sourceMap ? magicString.generateMap() : null
         };
       }
       const importBlock = Array.from(newImports.values())
