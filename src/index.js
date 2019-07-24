@@ -4,7 +4,7 @@ import { walk } from "estree-walker";
 
 import MagicString from "magic-string";
 
-const escape = (str) => {
+const escape = str => {
   return str.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
 };
 
@@ -30,7 +30,7 @@ const isReference = (node, parent) => {
   }
 };
 
-const flatten = (node) => {
+const flatten = node => {
   const parts = [];
 
   while (node.type === "MemberExpression") {
@@ -62,9 +62,10 @@ export default function inject(options) {
   // Fix paths on Windows
   if (sep !== "/") {
     modulesMap.forEach((mod, key) => {
-      modulesMap.set(key, Array.isArray(mod)
-        ? [mod[0].split(sep).join("/"), mod[1]]
-        : mod.split(sep).join("/"));
+      modulesMap.set(
+        key,
+        Array.isArray(mod) ? [mod[0].split(sep).join("/"), mod[1]] : mod.split(sep).join("/")
+      );
     });
   }
 
@@ -131,9 +132,7 @@ export default function inject(options) {
             if (mod[1] === "*") {
               newImports.set(hash, `import * as ${importLocalName} from '${mod[0]}';`);
             } else {
-              newImports.set(hash, `import { ${mod[1]} as ${importLocalName} } from '${
-                mod[0]
-              }';`);
+              newImports.set(hash, `import { ${mod[1]} as ${importLocalName} } from '${mod[0]}';`);
             }
           }
 
@@ -182,8 +181,7 @@ export default function inject(options) {
           map: sourceMap ? magicString.generateMap() : null
         };
       }
-      const importBlock = Array.from(newImports.values())
-        .join("\n\n");
+      const importBlock = Array.from(newImports.values()).join("\n\n");
 
       magicString.prepend(importBlock + "\n\n");
 
