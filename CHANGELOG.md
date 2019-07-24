@@ -1,5 +1,9 @@
 # rollup-plugin-inject
 
+## 3.0.1
+
+* Generate sourcemap when sourcemap enabled
+
 ## 3.0.0
 
 * Remove node v6 from support
