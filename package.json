@@ -3,7 +3,7 @@
   "description": "Scan modules for global variables and inject `import` statements where necessary",
   "version": "3.0.1",
   "devDependencies": {
-    "eslint": "^5.16.0",
+    "eslint": "^6.3.0",
     "mocha": "^6.2.0",
     "prettier": "^1.18.2",
     "rollup": "^1.17.0",
