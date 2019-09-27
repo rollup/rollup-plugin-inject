@@ -55,6 +55,8 @@ export default function inject(options) {
     modules = Object.assign({}, options);
     delete modules.include;
     delete modules.exclude;
+    delete modules.sourceMap;
+    delete modules.sourcemap;
   }
 
   const modulesMap = new Map(Object.entries(modules));
