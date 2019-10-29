@@ -1,7 +1,7 @@
 {
   "name": "rollup-plugin-inject",
   "description": "Scan modules for global variables and inject `import` statements where necessary",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "devDependencies": {
     "eslint": "^6.3.0",
     "mocha": "^6.2.0",
